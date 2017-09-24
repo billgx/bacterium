@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class food : MonoBehaviour {
-    public int foodAmount = 4;
+    public int foodAmount = 20;
 
 	// Use this for initialization
 	void Start () {
@@ -24,6 +24,7 @@ public class food : MonoBehaviour {
         }
         else
         {
+            Destroy(this.gameObject);
             return 0;
         }
     }
