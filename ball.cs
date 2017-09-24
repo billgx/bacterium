@@ -6,10 +6,13 @@ public class ball : MonoBehaviour {
 
     public GameObject foodTile;
     public food food;
-    static float reproduceTime = 2; // time in seconds between instantiating new bacterium
-    private int reproduceCount = 0;
+    public int foodCount = 0; // counter used to see how much food is in bacterium
+    private int eatCount = 0; // counts the number of successful eat();
+    static float eatTime = 2; // time in seconds between eat()
+    private int reproduceCount = 0; // used to count number of reproduce() method calls
+    public int eatsToReproduce = 3; // used to set the number of eats triggering a reproduce
     public static int lifetimeReproduction = 3; // number of times to instantiate a new bacterium before death
-    public int foodCount = 1;
+
 
         // how much food in bacterium stomach. It needs to be above zero or bacteria should die.
 
@@ -32,12 +35,16 @@ public class ball : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         timer += Time.deltaTime;
-        if (timer > reproduceTime) // && foodCount > 0)
+        if (timer > eatTime) // && foodCount > 0)
 
         {
             timer = 0;
-            //reproduce();
             eat();
+
+            if (eatCount % eatsToReproduce == 0) // eatsToReproduce is the number of eat() calls to reproduce() making a new bacterium
+            {
+                reproduce();
+            }
          }
 
         if (reproduceCount >= lifetimeReproduction)
@@ -59,21 +66,26 @@ public class ball : MonoBehaviour {
     public void eat()
     {
         int foodAmt = food.supplyFood();
-        if (foodAmt > 0)
+        if (foodTile == null)
+            die();
+        
+        if (foodAmt == 1)
         {
-            foodCount += food.supplyFood();
+            foodCount += foodAmt;
+            eatCount++;
 
         }
         else
         {
             foodCount--;
+
             if (foodCount < 0)
             {
                 die();
             }
 
         }
-        print("Eating. Food Count = " + foodCount);
+        //print("Eating. Food Count = " + foodCount);
 
 
     }
@@ -89,5 +101,6 @@ public class ball : MonoBehaviour {
     public void die()
     {
         Destroy(this.gameObject);
+        print("died");
     }
 }
