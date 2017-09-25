@@ -6,6 +6,7 @@ public class gm : MonoBehaviour { // lays the food tiles on the ground.
     public GameObject foodTile;
     int foodTileDimensions = 11;
     public int bactCount = 0;
+    //public List<GameObject> bacteriaList = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
@@ -14,7 +15,7 @@ public class gm : MonoBehaviour { // lays the food tiles on the ground.
         {
             for (int z = 1; z <= foodTileDimensions ; z++)
             {
-                Instantiate(foodTile, new Vector3(x * 4 - 24f, -0.4f, z * 4 - 24f), Quaternion.identity);
+                Instantiate(foodTile, new Vector3(x * 4 - 24f, -0.39f, z * 4 - 24f), Quaternion.identity);
             }
         }
 	}
@@ -24,15 +25,19 @@ public class gm : MonoBehaviour { // lays the food tiles on the ground.
 		
 	}
 
-    public void addBacteria()
+    public void addBacteria(GameObject b)
     {
+
         bactCount++;
         print("Bacteria count: " + bactCount);
+        //bacteriaList.Add(b);
     }
 
-    public void removeBacteria()
+    public void removeBacteria(GameObject b)
     {
         bactCount--;
         print("Bacteria count: " + bactCount);
+
+        //bacteriaList.Remove(b);
     }
 }

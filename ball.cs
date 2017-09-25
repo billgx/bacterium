@@ -5,13 +5,15 @@ using UnityEngine;
 public class ball : MonoBehaviour {
 
     public GameObject gameManager;
-    gm bactCount;
+    gm bactCount; // bacteria count of the game manager
 
     public GameObject foodTile;
     public food food;
     public int foodCount = 0; // counter used to see how much food is in bacterium's belly
+
     private int eatCount = 0; // counts the number of successful eat();
-    static float eatTime = 0.5f; // time in seconds between eat()
+    public float eatTime = 0.5f; // time in seconds between eat()
+
     private int reproduceCount = 0; // used to count number of reproduce() method calls
     public int eatsToReproduce = 2; // used to set the number of eats triggering a reproduce
     public static int lifetimeReproduction = 2; // number of times to instantiate a new bacterium before death
@@ -21,6 +23,7 @@ public class ball : MonoBehaviour {
 
 
     public GameObject newBall;
+    private Rigidbody ballRigidBody;
     float timer =  0;
 
  
@@ -29,6 +32,8 @@ public class ball : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         bactCount = gameManager.GetComponent<gm>();
+        ballRigidBody = newBall.GetComponent<Rigidbody>();
+        ballRigidBody.maxDepenetrationVelocity = 1;
 	}
 	
 	// Update is called once per frame
@@ -52,6 +57,7 @@ public class ball : MonoBehaviour {
         if (reproduceCount >= lifetimeReproduction)
         {
             die();
+            print("Been busy, now dying");
         }
 	}
         
@@ -84,17 +90,19 @@ public class ball : MonoBehaviour {
 
     public void reproduce()
     {
-        pos = Random.onUnitSphere + transform.position; // offsets the new bacterium in a random direction 1 unit away
+        pos = Random.onUnitSphere * 1.5f + transform.position; // offsets the new bacterium in a random direction 1 unit away
         pos = new Vector3(pos.x, 0, pos.z); // sets the y position to zero for the random position
         Instantiate(newBall, pos, Quaternion.identity); 
+        //newBall.transform.SetParent(transform, false); // experimenting with making new ball child of original ball
         reproduceCount++;
-        bactCount.addBacteria();
+        bactCount.addBacteria(newBall);
     }
 
     public void die()
     {
+        bactCount.removeBacteria(this.gameObject);
         Destroy(this.gameObject);
         print("died");
-        bactCount.removeBacteria();
+
     }
 }
