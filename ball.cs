@@ -4,37 +4,38 @@ using UnityEngine;
 
 public class ball : MonoBehaviour {
 
+    public GameObject gameManager;
+    gm bactCount;
+
     public GameObject foodTile;
     public food food;
-    public int foodCount = 0; // counter used to see how much food is in bacterium
+    public int foodCount = 0; // counter used to see how much food is in bacterium's belly
     private int eatCount = 0; // counts the number of successful eat();
-    static float eatTime = 2; // time in seconds between eat()
+    static float eatTime = 0.5f; // time in seconds between eat()
     private int reproduceCount = 0; // used to count number of reproduce() method calls
-    public int eatsToReproduce = 3; // used to set the number of eats triggering a reproduce
-    public static int lifetimeReproduction = 3; // number of times to instantiate a new bacterium before death
+    public int eatsToReproduce = 2; // used to set the number of eats triggering a reproduce
+    public static int lifetimeReproduction = 2; // number of times to instantiate a new bacterium before death
 
 
         // how much food in bacterium stomach. It needs to be above zero or bacteria should die.
 
-    //static float eatTime = 1;
-    /* need to determine relationship between eating and 
-     * reproducing. I'm thinking three eats = reproduce. 
-     * also, not eating should affect health and eventually = die().
-*/
 
     public GameObject newBall;
     float timer =  0;
+
  
     Vector3 pos; // position for new bacterium
 
 	// Use this for initialization
 	void Start () {
-        
+        bactCount = gameManager.GetComponent<gm>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         timer += Time.deltaTime;
+        //dieTimer += Time.deltaTime;
+
         if (timer > eatTime) // && foodCount > 0)
 
         {
@@ -46,6 +47,7 @@ public class ball : MonoBehaviour {
                 reproduce();
             }
          }
+
 
         if (reproduceCount >= lifetimeReproduction)
         {
@@ -65,29 +67,19 @@ public class ball : MonoBehaviour {
 
     public void eat()
     {
-        int foodAmt = food.supplyFood();
-        if (foodTile == null)
-            die();
         
-        if (foodAmt == 1)
+        if (foodTile == null)
         {
-            foodCount += foodAmt;
-            eatCount++;
-
+            die();
+            print("food tile is null");
+            return;
         }
         else
         {
-            foodCount--;
-
-            if (foodCount < 0)
-            {
-                die();
-            }
-
+            int foodAmt = food.supplyFood();
+            foodCount += foodAmt;
+            eatCount++;
         }
-        //print("Eating. Food Count = " + foodCount);
-
-
     }
 
     public void reproduce()
@@ -96,11 +88,13 @@ public class ball : MonoBehaviour {
         pos = new Vector3(pos.x, 0, pos.z); // sets the y position to zero for the random position
         Instantiate(newBall, pos, Quaternion.identity); 
         reproduceCount++;
+        bactCount.addBacteria();
     }
 
     public void die()
     {
         Destroy(this.gameObject);
         print("died");
+        bactCount.removeBacteria();
     }
 }
